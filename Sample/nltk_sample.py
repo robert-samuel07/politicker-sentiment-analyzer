@@ -8,6 +8,7 @@ from nltk.classify import ClassifierI
 from nltk.tokenize import word_tokenize, sent_tokenize
 import re
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 documents = []
 
@@ -18,18 +19,29 @@ allowed_word_types = ['J',]
 for p in sam_file:
     documents.append( (p,"pos") )
     print(p)
+
     tokenized_sent = sent_tokenize(p)
-    print("Tokenizing Text into sentnences!")
+    print("\nTokenizing Text into sentnences!\n")
     print(tokenized_sent)
+
     cleaned = re.sub(r'[^(a-zA-Z)\s]','',p)
-    print("Cleaning Text!")
+    print("\nCleaning Text!\n")
     print(cleaned)
+
     tokenized_word = word_tokenize(cleaned)
-    print("Tokenizing Text into words!")
+    print("\nTokenizing Text into words!\n")
     print(tokenized_word)
+
     stopped = [w for w in tokenized_sent if not w in stop_words]
-    print("Removing Stopwords!")
+    print("\nRemoving Stopwords!\n")
     print(stopped)
+
+    lemmatizer = WordNetLemmatizer()
+    lemmatized_output = ''.join([lemmatizer.lemmatize(stopped) for w in stopped])
+    print("Lemmatizing Article\n")
+    print(lemmatized_output)
+    print(lemmatizer.lemmatize("bats"))
+
 
 # Constants#
 
