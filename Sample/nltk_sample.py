@@ -8,39 +8,64 @@ from nltk.classify import ClassifierI
 from nltk.tokenize import word_tokenize, sent_tokenize
 import re
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 
 documents = []
 
 sam_file = open("gun_control_sample.txt","r")
 stop_words = list(set(stopwords.words('english')))
-allowed_word_types = ['J',]
 
+def get_wordnet_pos(nltk_tag):
+    
+""" This fucntion uses converts nltk tagged to wordnet tagged"""
+
+    if nltk_tag.startswith('J'):
+        return wordnet.ADJ
+    elif nltk_tag.startswith('V'):
+        return wordnet.VERB
+    elif nltk_tag.startswith('N'):
+        return wordnet.NOUN
+    elif nltk_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return None
+
+def lemmatize_paragraph(p):
+    # Tokenize and POS tage the tokens
+    tokenized_word = nltk.pos_tag(nltk.word_tokenize(cleaned))
+    print("\nTokenizing Text into words and converting it to a Dictionary!\n\n")
+    print("\n\n",tokenized_word,"\n\n")
+
+    #create a tuple of (token,wordnet_tag)
+    wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), tokenized_word)
+    lemmatized_p = []
+
+    for word, tag in wordnet_tagged:
+        if tag is None:
+            # If no tag is available append as is
+            lemmatized_p.append(word)
+        else:
+            # use the tag to lemmatize tokens
+            lemmatized_p.append(lemmatizer.lemmatize(word, tag))
+    return " ".join(lemmatized_p)
+
+
+lemmatizer = WordNetLemmatizer()
 for p in sam_file:
     documents.append( (p,"pos") )
     print(p)
-
-    tokenized_sent = sent_tokenize(p)
-    print("\nTokenizing Text into sentnences!\n")
-    print(tokenized_sent)
 
     cleaned = re.sub(r'[^(a-zA-Z)\s]','',p)
     print("\nCleaning Text!\n")
     print(cleaned)
 
-    tokenized_word = word_tokenize(cleaned)
-    print("\nTokenizing Text into words!\n")
-    print(tokenized_word)
+    #stopped = [w for w in tokenized_sent if not w in stop_words]
+    #print("\nRemoving Stopwords!\n")
+    #print(stopped)
 
-    stopped = [w for w in tokenized_sent if not w in stop_words]
-    print("\nRemoving Stopwords!\n")
-    print(stopped)
-
-    lemmatizer = WordNetLemmatizer()
-    lemmatized_output = ''.join([lemmatizer.lemmatize(stopped) for w in stopped])
-    print("Lemmatizing Article\n")
-    print(lemmatized_output)
-    print(lemmatizer.lemmatize("bats"))
+    print("\nLemmatizing Article\n")
+    print(lemmatize_paragraph(cleaned))
 
 
 # Constants#
