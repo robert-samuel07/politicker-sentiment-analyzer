@@ -1,4 +1,5 @@
-# This is a sample of feasibility for my sentiment analyzer
+
+# To run this code user the command: python3 nltk_sample.py
 
 import nltk
 import random
@@ -17,7 +18,7 @@ sam_file = open("gun_control_sample.txt","r")
 stop_words = list(set(stopwords.words('english')))
 
 def get_wordnet_pos(nltk_tag):
-    
+
 """ This fucntion uses converts nltk tagged to wordnet tagged"""
 
     if nltk_tag.startswith('J'):
